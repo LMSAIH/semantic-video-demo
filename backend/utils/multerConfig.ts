@@ -26,9 +26,11 @@ export function videoFileFilter(
   file: Express.Multer.File,
   cb: multer.FileFilterCallback
 ): void {
-  const allowedTypes = /mp4|avi|mov|mkv|webm/;
-  const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
-  const mimetype = allowedTypes.test(file.mimetype);
+  const allowedExtensions = /mp4|avi|mov|mkv|webm|wmv/;
+  const allowedMimeTypes = /video\/(mp4|x-msvideo|avi|quicktime|x-matroska|webm|x-ms-wmv|x-ms-asf)/;
+  
+  const extname = allowedExtensions.test(path.extname(file.originalname).toLowerCase());
+  const mimetype = allowedMimeTypes.test(file.mimetype);
   
   if (extname && mimetype) {
     cb(null, true);
