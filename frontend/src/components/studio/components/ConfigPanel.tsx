@@ -142,7 +142,7 @@ export function ConfigPanel({
             </p>
           </div>
 
-          <div className="space-y-2">
+          {config.partitionType === "frames" && <div className="space-y-2">
             <div className="flex justify-between items-center gap-2">
               <Label className="text-sm">Frame Rate (fps)</Label>
               <Input
@@ -169,7 +169,7 @@ export function ConfigPanel({
             <p className="text-xs text-muted-foreground">
               Used for frame-based partition calculations
             </p>
-          </div>
+          </div> }
 
           <div className="bg-muted/50 p-3 rounded-md space-y-2">
             <div className="flex justify-between items-center">
