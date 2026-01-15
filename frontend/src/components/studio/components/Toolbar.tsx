@@ -1,11 +1,9 @@
-import { Play, Clock, Loader2 } from 'lucide-react';
+import { Play, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 
 interface ToolbarProps {
   videoCount: number;
-  estimatedTokens: number | null;
   isAnalyzing: boolean;
   onEstimate: () => void;
   onAnalyze: () => void;
@@ -13,7 +11,6 @@ interface ToolbarProps {
 
 export function Toolbar({
   videoCount,
-  estimatedTokens,
   isAnalyzing,
   onEstimate,
   onAnalyze,
@@ -28,12 +25,6 @@ export function Toolbar({
       </div>
       
       <div className="flex items-center gap-2">
-        {estimatedTokens !== null && (
-          <Badge variant="outline" className="gap-1">
-            <Clock className="h-3 w-3" />
-            ~{estimatedTokens.toLocaleString()} tokens
-          </Badge>
-        )}
         <Button variant="outline" size="sm" onClick={onEstimate} disabled={videoCount === 0}>
           Estimate Cost
         </Button>
