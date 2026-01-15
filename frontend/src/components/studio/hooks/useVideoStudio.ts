@@ -11,7 +11,8 @@ export function useVideoStudio() {
   const [results, setResults] = useState<Map<string, AnalysisResult>>(new Map());
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analysisProgress, setAnalysisProgress] = useState(0);
-  const [estimatedTokens, setEstimatedTokens] = useState<number | null>(null);
+  const [estimateData, setEstimateData] = useState<videoApi.EstimateResponse | null>(null);
+  const [isEstimateModalOpen, setIsEstimateModalOpen] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
@@ -171,8 +172,9 @@ export function useVideoStudio() {
       .map(v => buildAnalysisConfig(v, configs.get(v.id)));
 
     try {
-      const tokens = await videoApi.estimateTokens(configsToEstimate);
-      setEstimatedTokens(tokens);
+      const data = await videoApi.estimateTokens(configsToEstimate);
+      setEstimateData(data);
+      setIsEstimateModalOpen(true);
     } catch (error) {
       console.error('Estimation failed:', error);
     }
@@ -226,7 +228,8 @@ export function useVideoStudio() {
     results,
     isAnalyzing,
     analysisProgress,
-    estimatedTokens,
+    estimateData,
+    isEstimateModalOpen,
     isDragging,
     currentVideo,
     currentConfig,
@@ -237,6 +240,7 @@ export function useVideoStudio() {
     // Actions
     setSelectedVideo,
     setIsDragging,
+    setIsEstimateModalOpen,
     handleFileDrop,
     handleFileSelect,
     removeVideo,
