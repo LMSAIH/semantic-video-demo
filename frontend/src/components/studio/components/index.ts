@@ -7,3 +7,4 @@ export { OutputPanel } from './OutputPanel';
 export { ConfigSidebar } from './ConfigSidebar';
 export { StatusBar } from './StatusBar';
 export { PartitionTimeline } from './PartitionTimeline';
+export { EstimateModal } from './EstimateModal';
