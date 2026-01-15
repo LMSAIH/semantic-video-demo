@@ -32,11 +32,28 @@ export interface EstimateRequest {
   }>;
 }
 
+export interface TokenEstimate {
+  totalTokens: number;
+  estimatedCost: number;
+}
+
+export interface VideoEstimate {
+  videoPath: string;
+  model: string;
+  numPartitions: number;
+  perFrame: TokenEstimate;
+  total: TokenEstimate;
+}
+
 export interface EstimateResponse {
-  totalTokens?: number;
-  estimate?: {
+  message: string;
+  videosEstimated: number;
+  videos: VideoEstimate[];
+  grandTotal: {
     totalTokens: number;
+    estimatedCost: number;
   };
+  elapsedTime: string;
 }
 
 export interface AnalyzeRequest {
@@ -86,9 +103,9 @@ export async function uploadVideo(file: File): Promise<UploadResponse> {
 /**
  * Estimate token usage for video analysis
  */
-export async function estimateTokens(configs: EstimateRequest['configs']): Promise<number> {
+export async function estimateTokens(configs: EstimateRequest['configs']): Promise<EstimateResponse> {
   const { data } = await api.post<EstimateResponse>('/analyze/estimate', { configs });
-  return data.totalTokens || data.estimate?.totalTokens || 0;
+  return data;
 }
 
 /**
