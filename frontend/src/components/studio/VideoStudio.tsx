@@ -7,6 +7,7 @@ import {
   ConfigSidebar,
   StatusBar,
 } from './components';
+import { EstimateModal } from './components/EstimateModal';
 
 export function VideoStudio() {
   const {
@@ -16,7 +17,8 @@ export function VideoStudio() {
     results,
     isAnalyzing,
     analysisProgress,
-    estimatedTokens,
+    estimateData,
+    isEstimateModalOpen,
     isDragging,
     currentVideo,
     currentConfig,
@@ -25,6 +27,7 @@ export function VideoStudio() {
     isUploading,
     setSelectedVideo,
     setIsDragging,
+    setIsEstimateModalOpen,
     handleFileDrop,
     handleFileSelect,
     removeVideo,
@@ -48,7 +51,6 @@ export function VideoStudio() {
       <div className="h-screen flex flex-col bg-background">
         <Toolbar
           videoCount={videos.length}
-          estimatedTokens={estimatedTokens}
           isAnalyzing={isAnalyzing}
           onEstimate={estimateTokens}
           onAnalyze={runAnalysis}
@@ -99,6 +101,12 @@ export function VideoStudio() {
 
         <StatusBar videoCount={videos.length} isAnalyzing={isAnalyzing} />
       </div>
+
+      <EstimateModal 
+        open={isEstimateModalOpen}
+        onOpenChange={setIsEstimateModalOpen}
+        estimateData={estimateData}
+      />
     </TooltipProvider>
   );
 }
