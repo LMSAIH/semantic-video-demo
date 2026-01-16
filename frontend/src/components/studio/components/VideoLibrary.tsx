@@ -84,19 +84,19 @@ export function VideoLibrary({
                 <div className="h-10 w-14 bg-muted rounded flex items-center justify-center shrink-0">
                   <Video className="h-4 w-4 text-muted-foreground" />
                 </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium truncate">{video.name}</p>
-                  <p className="text-xs text-muted-foreground">{video.size}</p>
+                <div className="flex-1 min-w-0 overflow-hidden max-w-32">
+                  <p className="text-sm font-medium truncate" title={video.name}>{video.name}</p>
+                  <p className="text-xs text-muted-foreground truncate">{video.size}</p>
                 </div>
                 {results.has(video.id) && (
-                  <Badge variant="secondary" className="text-xs">
+                  <Badge variant="secondary" className="text-xs shrink-0">
                     Done
                   </Badge>
                 )}
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="h-6 w-6 opacity-0 group-hover:opacity-100"
+                  className="h-6 w-6 opacity-0 group-hover:opacity-100 shrink-0"
                   onClick={(e) => {
                     e.stopPropagation();
                     onRemoveVideo(video.id);
