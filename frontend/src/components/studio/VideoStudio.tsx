@@ -8,6 +8,7 @@ import {
   StatusBar,
 } from './components';
 import { EstimateModal } from './components/EstimateModal';
+import { VideoSelectionModal } from './components/VideoSelectionModal';
 
 export function VideoStudio() {
   const {
@@ -19,6 +20,8 @@ export function VideoStudio() {
     analysisProgress,
     estimateData,
     isEstimateModalOpen,
+    isEstimating,
+    isVideoSelectionModalOpen,
     isDragging,
     currentVideo,
     currentConfig,
@@ -28,11 +31,13 @@ export function VideoStudio() {
     setSelectedVideo,
     setIsDragging,
     setIsEstimateModalOpen,
+    setIsVideoSelectionModalOpen,
     handleFileDrop,
     handleFileSelect,
     removeVideo,
     updateConfig,
     estimateTokens,
+    showVideoSelectionModal,
     runAnalysis,
     clearUploadError,
   } = useVideoStudio();
@@ -53,7 +58,7 @@ export function VideoStudio() {
           videoCount={videos.length}
           isAnalyzing={isAnalyzing}
           onEstimate={estimateTokens}
-          onAnalyze={runAnalysis}
+          onAnalyze={showVideoSelectionModal}
         />
 
         <div className="flex-1 flex overflow-hidden">
@@ -106,6 +111,15 @@ export function VideoStudio() {
         open={isEstimateModalOpen}
         onOpenChange={setIsEstimateModalOpen}
         estimateData={estimateData}
+        isEstimating={isEstimating}
+      />
+
+      <VideoSelectionModal
+        open={isVideoSelectionModalOpen}
+        onOpenChange={setIsVideoSelectionModalOpen}
+        videos={videos}
+        results={results}
+        onConfirm={runAnalysis}
       />
     </TooltipProvider>
   );
