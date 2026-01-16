@@ -13,6 +13,8 @@ export function useVideoStudio() {
   const [analysisProgress, setAnalysisProgress] = useState(0);
   const [estimateData, setEstimateData] = useState<videoApi.EstimateResponse | null>(null);
   const [isEstimateModalOpen, setIsEstimateModalOpen] = useState(false);
+  const [isEstimating, setIsEstimating] = useState(false);
+  const [isVideoSelectionModalOpen, setIsVideoSelectionModalOpen] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
@@ -171,21 +173,27 @@ export function useVideoStudio() {
       .filter(v => v.uploadedPath)
       .map(v => buildAnalysisConfig(v, configs.get(v.id)));
 
+    setIsEstimating(true);
+    setIsEstimateModalOpen(true);
     try {
       const data = await videoApi.estimateTokens(configsToEstimate);
       setEstimateData(data);
-      setIsEstimateModalOpen(true);
     } catch (error) {
       console.error('Estimation failed:', error);
+    } finally {
+      setIsEstimating(false);
     }
   }, [videos, configs]);
 
-  const runAnalysis = useCallback(async () => {
+  const runAnalysis = useCallback(async (videoIds?: string[]) => {
     setIsAnalyzing(true);
     setAnalysisProgress(0);
 
-    const configsToAnalyze = videos
-      .filter(v => v.uploadedPath)
+    const videosToAnalyze = videoIds 
+      ? videos.filter(v => videoIds.includes(v.id) && v.uploadedPath)
+      : videos.filter(v => v.uploadedPath);
+
+    const configsToAnalyze = videosToAnalyze
       .map(v => buildAnalysisConfig(v, configs.get(v.id)));
 
     try {
@@ -201,7 +209,7 @@ export function useVideoStudio() {
       setResults(prev => {
         const newResults = new Map(prev);
         results.forEach((result: AnalysisResult, index: number) => {
-          const video = videos[index];
+          const video = videosToAnalyze[index];
           if (video) {
             newResults.set(video.id, result);
           }
@@ -214,6 +222,10 @@ export function useVideoStudio() {
       setIsAnalyzing(false);
     }
   }, [videos, configs]);
+
+  const showVideoSelectionModal = useCallback(() => {
+    setIsVideoSelectionModalOpen(true);
+  }, []);
 
   const currentVideo = videos.find(v => v.id === selectedVideo);
   const currentConfig = selectedVideo ? configs.get(selectedVideo) ?? null : null;
@@ -230,6 +242,8 @@ export function useVideoStudio() {
     analysisProgress,
     estimateData,
     isEstimateModalOpen,
+    isEstimating,
+    isVideoSelectionModalOpen,
     isDragging,
     currentVideo,
     currentConfig,
@@ -241,11 +255,13 @@ export function useVideoStudio() {
     setSelectedVideo,
     setIsDragging,
     setIsEstimateModalOpen,
+    setIsVideoSelectionModalOpen,
     handleFileDrop,
     handleFileSelect,
     removeVideo,
     updateConfig,
     estimateTokens,
+    showVideoSelectionModal,
     runAnalysis,
     clearUploadError,
   };
