@@ -25,7 +25,7 @@ export function Toolbar({
       </div>
       
       <div className="flex items-center gap-2">
-        <Button variant="outline" size="sm" onClick={onEstimate} disabled={videoCount === 0}>
+        <Button variant="outline" size="sm" onClick={onEstimate} disabled={videoCount === 0 || isAnalyzing}>
           Estimate Cost
         </Button>
         <Button size="sm" onClick={onAnalyze} disabled={videoCount === 0 || isAnalyzing}>
