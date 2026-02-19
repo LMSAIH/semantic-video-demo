@@ -1,7 +1,6 @@
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { Clock, DollarSign, Film, ChevronDown, ChevronRight, Loader2 } from 'lucide-react';
-import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
 import type { EstimateResponse } from '../services/videoApi';
@@ -20,62 +19,63 @@ export function EstimateModal({ open, onOpenChange, estimateData, isEstimating =
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl max-h-[85vh] flex flex-col">
+      <DialogContent className="max-w-4xl max-h-[85vh] flex flex-col sm:rounded-2xl">
         <DialogHeader className="shrink-0">
-          <DialogTitle>Token Usage Estimate</DialogTitle>
-          <DialogDescription>
+          <DialogTitle className="text-lg font-semibold tracking-tight">Token Usage Estimate</DialogTitle>
+          <DialogDescription className="text-sm text-muted-foreground">
             Estimated tokens and cost for your video analysis
           </DialogDescription>
         </DialogHeader>
 
         {isEstimating ? (
-          <div className="flex flex-col items-center justify-center py-12 space-y-4">
-            <Loader2 className="h-12 w-12 animate-spin text-primary" />
+          <div className="flex flex-col items-center justify-center py-16 space-y-4">
+            <div className="h-16 w-16 rounded-2xl bg-primary/10 flex items-center justify-center">
+              <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            </div>
             <div className="text-center">
-              <h3 className="font-medium text-lg">Calculating estimate...</h3>
+              <h3 className="font-semibold text-base tracking-tight">Calculating estimate...</h3>
               <p className="text-sm text-muted-foreground mt-1">Analyzing videos and computing token usage</p>
             </div>
           </div>
         ) : estimateData && (
-        <div className="space-y-4 overflow-y-auto flex-1 pr-2">{/* Summary Cards */}
-
-          <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-md p-3">
-              <p className="text-yellow-600 dark:text-yellow-500 font-medium">
-                ⚠️ Disclaimer: These estimates are approximate and may not reflect actual usage. Do not rely on these figures for critical budgeting decisions.
+        <div className="space-y-4 overflow-y-auto flex-1 pr-2">
+          <div className="bg-amber-500/8 border border-amber-500/15 rounded-xl p-3.5">
+              <p className="text-sm text-amber-700 dark:text-amber-400 font-medium leading-relaxed">
+                ⚠️ These estimates are approximate and may not reflect actual usage.
               </p>
             </div>
           {/* Summary Cards */}
-          <div className="grid grid-cols-3 gap-3">
-            <div className="p-4 border rounded-lg bg-card">
-              <div className="flex items-center gap-2 text-muted-foreground text-sm mb-1">
-                <Film className="h-4 w-4" />
+          <div className="grid grid-cols-3 gap-2.5">
+            <div className="p-4 rounded-xl bg-muted/30">
+              <div className="flex items-center gap-2 text-muted-foreground text-xs font-semibold uppercase tracking-wider mb-2">
+                <Film className="h-3.5 w-3.5" />
                 Videos
               </div>
-              <div className="text-2xl font-bold">{estimateData.videosEstimated}</div>
+              <div className="text-2xl font-bold tracking-tight">{estimateData.videosEstimated}</div>
             </div>
 
-            <div className="p-4 border rounded-lg bg-card">
-              <div className="flex items-center gap-2 text-muted-foreground text-sm mb-1">
-                <Clock className="h-4 w-4" />
+            <div className="p-4 rounded-xl bg-muted/30">
+              <div className="flex items-center gap-2 text-muted-foreground text-xs font-semibold uppercase tracking-wider mb-2">
+                <Clock className="h-3.5 w-3.5" />
                 Total Tokens
               </div>
-              <div className="text-2xl font-bold">
+              <div className="text-2xl font-bold tracking-tight">
                 {estimateData.grandTotal.totalTokens.toLocaleString()}
               </div>
             </div>
 
-            <div className="p-4 border rounded-lg bg-card">
-              <div className="flex items-center gap-2 text-muted-foreground text-sm mb-1">
-                <DollarSign className="h-4 w-4" />
+            <div className="p-4 rounded-xl bg-muted/30">
+              <div className="flex items-center gap-2 text-muted-foreground text-xs font-semibold uppercase tracking-wider mb-2">
+                <DollarSign className="h-3.5 w-3.5" />
                 Est. Cost
               </div>
-              <div className="text-2xl font-bold">
+              <div className="text-2xl font-bold tracking-tight">
                 ${estimateData.grandTotal.estimatedCost.toFixed(4)}
               </div>
             </div>
           </div>
 
-          <Separator />
+          <div className="h-px bg-border/40" />
 
           {/* Expandable Per-Video Breakdown */}
           <div>
@@ -84,11 +84,11 @@ export function EstimateModal({ open, onOpenChange, estimateData, isEstimating =
               className="w-full justify-between p-0 h-auto hover:bg-transparent"
               onClick={() => setShowPerVideo(!showPerVideo)}
             >
-              <h3 className="font-semibold text-sm">Per-Video Breakdown ({estimateData.videos.length})</h3>
+              <h3 className="font-semibold text-sm tracking-tight">Per-Video Breakdown ({estimateData.videos.length})</h3>
               {showPerVideo ? (
-                <ChevronDown className="h-4 w-4" />
+                <ChevronDown className="h-4 w-4 text-muted-foreground/50" />
               ) : (
-                <ChevronRight className="h-4 w-4" />
+                <ChevronRight className="h-4 w-4 text-muted-foreground/50" />
               )}
             </Button>
             
@@ -98,13 +98,13 @@ export function EstimateModal({ open, onOpenChange, estimateData, isEstimating =
                   const videoName = video.videoPath.split('/').pop() || video.videoPath;
                   
                   return (
-                    <div key={index} className="p-3 border rounded-lg bg-muted/30">
+                    <div key={index} className="p-3.5 rounded-xl bg-muted/20">
                       <div className="flex items-start justify-between mb-2">
                         <div className="flex-1 min-w-0">
                           <div className="font-medium text-sm truncate" title={videoName}>
                             {videoName}
                           </div>
-                          <div className="text-xs text-muted-foreground mt-1">
+                          <div className="text-xs text-muted-foreground mt-0.5">
                             Model: {video.model}
                           </div>
                         </div>
@@ -118,14 +118,14 @@ export function EstimateModal({ open, onOpenChange, estimateData, isEstimating =
                         </div>
                       </div>
                       
-                      <div className="flex items-center gap-2 flex-wrap mt-2">
-                        <Badge variant="secondary" className="text-xs">
+                      <div className="flex items-center gap-1.5 flex-wrap mt-2">
+                        <Badge variant="secondary" className="text-[10px] rounded-md">
                           {video.numPartitions} partitions
                         </Badge>
-                        <Badge variant="outline" className="text-xs">
+                        <Badge variant="outline" className="text-[10px] rounded-md">
                           Per frame: {video.perFrame.totalTokens.toLocaleString()} tokens
                         </Badge>
-                        <Badge variant="outline" className="text-xs">
+                        <Badge variant="outline" className="text-[10px] rounded-md">
                           Input: {video.perFrame.totalTokens.toLocaleString()} tokens
                         </Badge>
                       </div>
@@ -137,7 +137,7 @@ export function EstimateModal({ open, onOpenChange, estimateData, isEstimating =
           </div>
 
           {/* Footer Info */}
-          <div className="text-xs text-muted-foreground pt-2 space-y-2">
+          <div className="text-xs text-muted-foreground pt-2 space-y-1">
           
             <p>Estimation completed in {estimateData.elapsedTime}ms</p>
             <p>* Cost estimates are based on the selected model's pricing</p>

@@ -1,4 +1,21 @@
 import type { VideoFile, AnalysisConfig } from '../types';
+import { API_BASE } from '../types';
+
+/**
+ * Get a playback URL for a video.
+ * Uses the in-memory File blob when available (fresh upload),
+ * otherwise falls back to the backend static URL (rehydrated session).
+ */
+export function getVideoSrc(video: VideoFile): string | undefined {
+  if (video.file) {
+    return URL.createObjectURL(video.file);
+  }
+  if (video.uploadedPath) {
+    const filename = video.uploadedPath.replace(/\\/g, '/').split('/').pop();
+    return `${API_BASE}/uploads/${filename}`;
+  }
+  return undefined;
+}
 
 /**
  * Format file size in bytes to human-readable format

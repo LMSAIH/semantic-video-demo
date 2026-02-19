@@ -1,7 +1,8 @@
-import { Settings, ChevronRight } from 'lucide-react';
+import { Settings, ChevronRight, Wand2 } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ConfigPanel } from './ConfigPanel';
 import { OutputPanel } from './OutputPanel';
+import { ComposerPanel } from './ComposerPanel';
 import type { AnalysisConfig, AnalysisResult, Model, VideoFile } from '../types';
 
 interface ConfigSidebarProps {
@@ -22,22 +23,29 @@ export function ConfigSidebar({
   onUpdateConfig,
 }: ConfigSidebarProps) {
   return (
-    <div className="w-80 shrink-0 h-full border-l bg-card/50">
+    <div className="w-96 shrink-0 h-full border-l apple-divider glass-subtle">
       <Tabs defaultValue="config" className="h-full flex flex-col">
-        <TabsList className="w-full justify-start rounded-none border-b bg-transparent p-0 shrink-0">
+        <TabsList className="w-full justify-start rounded-none border-b apple-divider bg-transparent p-0 h-11 shrink-0">
           <TabsTrigger
             value="config"
-            className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent"
+            className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent text-sm font-medium px-4 h-full transition-colors"
           >
-            <Settings className="h-4 w-4 mr-2" />
+            <Settings className="h-3.5 w-3.5 mr-1.5" />
             Config
           </TabsTrigger>
           <TabsTrigger
             value="output"
-            className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent"
+            className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent text-sm font-medium px-4 h-full transition-colors"
           >
-            <ChevronRight className="h-4 w-4 mr-2" />
+            <ChevronRight className="h-3.5 w-3.5 mr-1.5" />
             Output
+          </TabsTrigger>
+          <TabsTrigger
+            value="composer"
+            className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent text-sm font-medium px-4 h-full transition-colors"
+          >
+            <Wand2 className="h-3.5 w-3.5 mr-1.5" />
+            Composer
           </TabsTrigger>
         </TabsList>
 
@@ -53,6 +61,10 @@ export function ConfigSidebar({
 
         <TabsContent value="output" className="flex-1 m-0 overflow-hidden">
           <OutputPanel result={result} />
+        </TabsContent>
+
+        <TabsContent value="composer" className="flex-1 m-0 overflow-hidden">
+          <ComposerPanel videoId={videoId} result={result} />
         </TabsContent>
       </Tabs>
     </div>

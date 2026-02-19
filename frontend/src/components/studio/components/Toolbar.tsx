@@ -1,6 +1,5 @@
 import { Play, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Separator } from '@/components/ui/separator';
 
 interface ToolbarProps {
   videoCount: number;
@@ -16,27 +15,31 @@ export function Toolbar({
   onAnalyze,
 }: ToolbarProps) {
   return (
-    <header className="h-14 border-b flex items-center justify-between px-4 bg-card shrink-0">
-      <div className="flex items-center gap-3">
-        <div className="flex items-center gap-2">
-          <span className="font-semibold text-lg">Semantic Video Studio</span>
-        </div>
-        <Separator orientation="vertical" className="h-6" />
-      </div>
-      
+    <header className="h-12 glass border-b apple-divider flex items-center justify-end px-5 shrink-0 z-10">
       <div className="flex items-center gap-2">
-        <Button variant="outline" size="sm" onClick={onEstimate} disabled={videoCount === 0 || isAnalyzing}>
+        <Button 
+          variant="ghost" 
+          size="sm" 
+          onClick={onEstimate} 
+          disabled={videoCount === 0 || isAnalyzing}
+          className="h-8 px-3.5 text-sm font-medium rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/60"
+        >
           Estimate Cost
         </Button>
-        <Button size="sm" onClick={onAnalyze} disabled={videoCount === 0 || isAnalyzing}>
+        <Button 
+          size="sm" 
+          onClick={onAnalyze} 
+          disabled={videoCount === 0 || isAnalyzing}
+          className="h-8 px-4 text-sm font-medium rounded-lg apple-shadow"
+        >
           {isAnalyzing ? (
             <>
-              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+              <Loader2 className="h-3.5 w-3.5 mr-1.5 animate-spin" />
               Analyzing...
             </>
           ) : (
             <>
-              <Play className="h-4 w-4 mr-2" />
+              <Play className="h-3.5 w-3.5 mr-1.5" />
               Run Analysis
             </>
           )}

@@ -1,6 +1,6 @@
 export interface VideoFile {
   id: string;
-  file: File;
+  file?: File; // Only available during the current session (not persisted)
   name: string;
   size: string;
   duration?: number; // Duration in seconds
@@ -35,6 +35,21 @@ export interface Model {
   id: string;
   name: string;
   provider: string;
+}
+
+export interface ComposerPreset {
+  id: string;
+  name: string;
+  description: string;
+}
+
+export interface Composition {
+  id: string;
+  videoId: string;
+  preset: string;
+  model: string;
+  content: string;
+  createdAt: string;
 }
 
 export const API_BASE = 'http://localhost:3000';

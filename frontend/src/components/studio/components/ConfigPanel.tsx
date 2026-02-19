@@ -1,7 +1,6 @@
 import { Settings } from 'lucide-react';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Separator } from '@/components/ui/separator';
 import { Textarea } from '@/components/ui/textarea';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Badge } from '@/components/ui/badge';
@@ -27,9 +26,11 @@ export function ConfigPanel({
 }: ConfigPanelProps) {
   if (!config || !videoId) {
     return (
-      <div className="text-center py-8 text-muted-foreground">
-        <Settings className="h-8 w-8 mx-auto mb-2 opacity-50" />
-        <p className="text-sm">Select a video to configure</p>
+      <div className="text-center py-12 text-muted-foreground">
+        <div className="h-12 w-12 rounded-2xl bg-muted/40 flex items-center justify-center mx-auto mb-3">
+          <Settings className="h-5 w-5 opacity-40" />
+        </div>
+        <p className="text-sm font-medium text-muted-foreground">Select a video to configure</p>
       </div>
     );
   }
@@ -54,25 +55,25 @@ export function ConfigPanel({
 
   return (
     <ScrollArea className="h-full">
-      <div className="p-4 space-y-6">
+      <div className="p-5 space-y-2">
         {/* Model Selection */}
-        <div className="space-y-2">
-          <Label className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+        <div className="space-y-2.5">
+          <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
             AI Model
           </Label>
           <Select
             value={config.model}
             onValueChange={(value) => onUpdateConfig(videoId, { model: value })}
           >
-            <SelectTrigger>
+            <SelectTrigger className="rounded-xl h-10 text-sm">
               <SelectValue placeholder="Select a model" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="rounded-xl">
               {models.map((model) => (
-                <SelectItem key={model.id} value={model.id}>
+                <SelectItem key={model.id} value={model.id} className="rounded-lg text-sm">
                   <div className="flex items-center gap-2">
                     <span>{model.name}</span>
-                    <Badge variant="outline" className="text-xs">
+                    <Badge variant="outline" className="text-[10px] rounded-md">
                       {model.provider}
                     </Badge>
                   </div>
@@ -82,47 +83,52 @@ export function ConfigPanel({
           </Select>
         </div>
 
-        <Separator />
+        <div className="h-px bg-border/40" />
 
         {/* Partition Settings */}
         <div className="space-y-4">
-          <Label className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+          <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
             Frame Partitioning
           </Label>
           
-          <div className="space-y-2">
-            <Label className="text-sm">Partition By</Label>
+          <div className="space-y-2.5">
+            <Label className="text-sm font-medium">Partition By</Label>
             <Select
               value={config.partitionType}
               onValueChange={(value: 'time' | 'frames') => 
                 handlePartitionChange({ partitionType: value })
               }
             >
-              <SelectTrigger>
+              <SelectTrigger className="rounded-xl h-10 text-sm">
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="time">Time (seconds)</SelectItem>
-                <SelectItem value="frames">Frame Count</SelectItem>
+              <SelectContent className="rounded-xl">
+                <SelectItem value="time" className="rounded-lg text-sm">Time (seconds)</SelectItem>
+                <SelectItem value="frames" className="rounded-lg text-sm">Frame Count</SelectItem>
               </SelectContent>
             </Select>
           </div>
 
-          <div className="space-y-2">
+          <div className="space-y-2.5">
             <div className="flex justify-between items-center gap-2">
-              <Label className="text-sm">
+              <Label className="text-sm font-medium">
                 {config.partitionType === 'time' ? 'Interval (seconds)' : 'Interval (frames)'}
               </Label>
               <Input
                 type="number"
                 value={config.partitionInterval}
                 onChange={(e) => {
-                  const value = parseInt(e.target.value) || 1;
-                  handlePartitionChange({ partitionInterval: Math.max(1, Math.min(1000, value)) });
+                  const isTime = config.partitionType === 'time';
+                  const value = isTime
+                    ? parseFloat(e.target.value) || 0.1
+                    : parseInt(e.target.value) || 1;
+                  const min = isTime ? 0.1 : 1;
+                  handlePartitionChange({ partitionInterval: Math.max(min, Math.min(1000, value)) });
                 }}
-                min={1}
+                min={config.partitionType === 'time' ? 0.1 : 1}
+                step={config.partitionType === 'time' ? 0.1 : 1}
                 max={1000}
-                className="w-20 h-8 text-sm"
+                className="w-20 h-8 text-sm rounded-lg"
               />
             </div>
             <Slider
@@ -130,11 +136,11 @@ export function ConfigPanel({
               onValueChange={([value]) => 
                 handlePartitionChange({ partitionInterval: value })
               }
-              min={1}
+              min={config.partitionType === 'time' ? 0.1 : 1}
               max={1000}
-              step={1}
+              step={config.partitionType === 'time' ? 0.1 : 1}
             />
-            <p className="text-xs text-muted-foreground">
+            <p className="text-xs text-muted-foreground leading-relaxed">
               {config.partitionType === 'time' 
                 ? `Extract frames every ${config.partitionInterval} second${config.partitionInterval !== 1 ? 's' : ''}`
                 : `Extract frames every ${config.partitionInterval} frame${config.partitionInterval !== 1 ? 's' : ''}`
@@ -142,9 +148,9 @@ export function ConfigPanel({
             </p>
           </div>
 
-          {config.partitionType === "frames" && <div className="space-y-2">
+          {config.partitionType === "frames" && <div className="space-y-2.5">
             <div className="flex justify-between items-center gap-2">
-              <Label className="text-sm">Frame Rate (fps)</Label>
+              <Label className="text-sm font-medium">Frame Rate (fps)</Label>
               <Input
                 type="number"
                 value={config.frameRate}
@@ -154,7 +160,7 @@ export function ConfigPanel({
                 }}
                 min={1}
                 max={240}
-                className="w-20 h-8 text-sm"
+                className="w-20 h-8 text-sm rounded-lg"
               />
             </div>
             <Slider
@@ -166,15 +172,15 @@ export function ConfigPanel({
               max={240}
               step={1}
             />
-            <p className="text-xs text-muted-foreground">
+            <p className="text-xs text-muted-foreground leading-relaxed">
               Used for frame-based partition calculations
             </p>
           </div> }
 
-          <div className="bg-muted/50 p-3 rounded-md space-y-2">
+          <div className="bg-muted/30 p-3.5 rounded-xl space-y-2">
             <div className="flex justify-between items-center">
-              <span className="text-sm font-medium">Total Partitions:</span>
-              <Badge variant="secondary" className="text-sm">
+              <span className="text-sm font-medium">Total Partitions</span>
+              <Badge variant="secondary" className="text-sm rounded-lg px-2.5 font-semibold">
                 {calculatedPartitions}
               </Badge>
             </div>
@@ -183,18 +189,18 @@ export function ConfigPanel({
                 Video duration: {currentVideo.duration.toFixed(1)}s
               </p>
             ) : (
-              <p className="text-xs text-warning-foreground">
-                ⚠️ Duration unavailable - using default calculation
+              <p className="text-xs text-amber-600">
+                ⚠️ Duration unavailable — using default calculation
               </p>
             )}
           </div>
         </div>
 
-        <Separator />
+        <div className="h-px bg-border/40" />
 
         {/* Custom Prompt */}
-        <div className="space-y-2">
-          <Label className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+        <div className="space-y-2.5">
+          <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
             Analysis Prompt
           </Label>
           <Textarea
@@ -202,9 +208,9 @@ export function ConfigPanel({
             onChange={(e) => onUpdateConfig(videoId, { prompt: e.target.value })}
             placeholder="Describe what you want the AI to analyze..."
             rows={4}
-            className="resize-none"
+            className="resize-none rounded-xl text-sm leading-relaxed"
           />
-          <p className="text-xs text-muted-foreground">
+          <p className="text-xs text-muted-foreground leading-relaxed">
             This prompt will be sent with each frame for analysis
           </p>
         </div>
